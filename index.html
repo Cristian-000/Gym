@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gym Tracker - Rutina</title>
+    <title>Gym Tracker Pro - Cristian</title>
     <style>
         :root {
-            --primary: #d4ff00; /* Color volt/lima muy de gym */
-            --bg: #121212;
-            --card-bg: #1e1e1e;
+            --primary: #d4ff00; 
+            --bg: #0f0f0f;
+            --card-bg: #1a1a1a;
             --text: #ffffff;
-            --text-dim: #b3b3b3;
+            --accent: #ff4444; /* Para resaltar triseries */
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
             background-color: var(--bg);
             color: var(--text);
             margin: 0;
@@ -24,96 +24,132 @@
             align-items: center;
         }
 
-        /* Cronómetro Fijo */
+        /* Cronómetro Fijo y Gigante */
         .timer-container {
             position: sticky;
             top: 0;
             width: 100%;
-            background-color: var(--card-bg);
-            padding: 15px 0;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            background-color: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 20px 0;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.8);
             z-index: 1000;
             text-align: center;
-            border-bottom: 2px solid var(--primary);
+            border-bottom: 3px solid var(--primary);
         }
 
         #display {
-            font-size: 2.5rem;
-            font-weight: bold;
+            font-size: 3.5rem;
+            font-weight: 800;
             font-variant-numeric: tabular-nums;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             color: var(--primary);
+            text-shadow: 0 0 10px rgba(212, 255, 0, 0.3);
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
         }
 
         .controls button {
-            background: none;
-            border: 1px solid var(--primary);
-            color: var(--primary);
-            padding: 8px 20px;
-            margin: 0 5px;
-            border-radius: 5px;
+            background: var(--primary);
+            border: none;
+            color: black;
+            padding: 18px 35px; /* Botones más grandes */
+            font-size: 1.2rem;
+            border-radius: 12px;
             cursor: pointer;
             font-weight: bold;
-            transition: 0.3s;
+            text-transform: uppercase;
+            transition: transform 0.1s, background 0.2s;
+            flex: 0 1 150px;
         }
 
-        .controls button:hover {
-            background-color: var(--primary);
-            color: black;
+        .controls button:active {
+            transform: scale(0.95);
+        }
+
+        .btn-reset {
+            background: #333 !important;
+            color: white !important;
         }
 
         /* Contenido Principal */
         .content {
-            width: 90%;
-            max-width: 500px;
-            padding: 20px 0;
+            width: 92%;
+            max-width: 550px;
+            padding: 25px 0 100px 0;
         }
 
         select {
             width: 100%;
-            padding: 12px;
+            padding: 15px;
             background: var(--card-bg);
-            color: white;
-            border: 1px solid #444;
-            border-radius: 8px;
-            font-size: 1rem;
-            margin-bottom: 20px;
-        }
-
-        .routine-header {
-            text-align: center;
-            margin-bottom: 20px;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 25px;
+            appearance: none;
         }
 
         .message {
+            background: #252525;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary);
+            margin-bottom: 20px;
             font-style: italic;
-            color: var(--primary);
-            margin-bottom: 10px;
+            font-size: 0.95rem;
         }
 
         .exercise-card {
             background: var(--card-bg);
-            margin-bottom: 10px;
-            padding: 15px;
-            border-radius: 8px;
-            border-left: 4px solid var(--primary);
+            margin-bottom: 12px;
+            padding: 18px;
+            border-radius: 12px;
+            border: 1px solid #333;
         }
 
         .exercise-card h3 {
-            margin: 0 0 5px 0;
+            margin: 0 0 8px 0;
+            font-size: 1.2rem;
+            color: var(--primary);
+        }
+
+        .reps-info {
             font-size: 1.1rem;
+            font-weight: 700;
+            color: #eee;
         }
 
-        .exercise-card p {
-            margin: 0;
-            color: var(--text-dim);
+        /* Estilo especial para Triseries/Descendentes */
+        .special-method {
+            display: inline-block;
+            margin-top: 5px;
+            background: #3a0000;
+            color: #ff6666;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            border: 1px solid var(--accent);
+        }
+
+        .alt-option {
+            color: #888;
             font-size: 0.9rem;
+            margin-top: 5px;
+            display: block;
         }
 
-        /* Responsive */
-        @media (max-width: 480px) {
-            #display { font-size: 2rem; }
-            .controls button { padding: 6px 15px; }
+        @media (max-width: 400px) {
+            #display { font-size: 2.8rem; }
+            .controls button { padding: 15px 20px; font-size: 1rem; }
         }
     </style>
 </head>
@@ -123,7 +159,7 @@
         <div id="display">00:00:00</div>
         <div class="controls">
             <button onclick="startStop()" id="startBtn">Iniciar</button>
-            <button onclick="reset()">Reiniciar</button>
+            <button onclick="reset()" class="btn-reset">Reset</button>
         </div>
     </div>
 
@@ -135,80 +171,70 @@
             <option value="tiron2">Tirón y Femoral - Día 2</option>
         </select>
 
-        <div id="routineDisplay">
-            </div>
+        <div id="routineDisplay"></div>
     </div>
 
     <script>
-        // Datos de las rutinas
         const routines = {
             empuje1: {
-                title: "Empuje y Cuádriceps - Día 1",
-                message: "¡Dale con todo a esas piernas y al pecho!",
+                message: "Empuje y cuadriseps día 1",
                 exercises: [
-                    { name: "Sentadilla", sets: "4x8" },
-                    { name: "Prensa cuádriceps / Sissy / Camilla", sets: "3x15" },
-                    { name: "Press plano (Barra o Mancuerna)", sets: "3x8" },
-                    { name: "Aperturas planas", sets: "3x12" },
-                    { name: "Vuelos laterales (Triserie descendente)", sets: "3x8" },
-                    { name: "Tríceps polea", sets: "2x10 y 1x6" }
+                    { name: "Sentadilla", reps: "4x8" },
+                    { name: "Prensa / Sissy / Camilla", reps: "3x15", note: "Elige una opción" },
+                    { name: "Press plano (Barra o Mancuerna)", reps: "3x8" },
+                    { name: "Aperturas planas", reps: "3x12" },
+                    { name: "Vuelos laterales", reps: "3x8", special: "Triserie descendente" },
+                    { name: "Triceps polea", reps: "2x10 y 1x6", special: "Controlar el peso" }
                 ]
             },
             tiron1: {
-                title: "Tirón y Femoral - Día 1",
-                message: "Enfócate en la espalda y el control del peso muerto.",
+                message: "Tirón y femoral día 1",
                 exercises: [
-                    { name: "Peso muerto", sets: "4x8" },
-                    { name: "Camilla femoral / Plancha femoral", sets: "3x15" },
-                    { name: "Dominadas", sets: "4x10" },
-                    { name: "Posterior de hombros (Polea o Cadera)", sets: "3x8 descendente" },
-                    { name: "Trapecio mancuernas", sets: "3x12" },
-                    { name: "Bíceps barra Z (o Martillo)", sets: "2x10, 1x15, 1x6" }
+                    { name: "Peso muerto", reps: "4x8" },
+                    { name: "Camilla femoral / Plancha femoral", reps: "3x15" },
+                    { name: "Dominadas", reps: "4x10" },
+                    { name: "Posterior de hombros", reps: "3x8", special: "Triserie descendente (Polea o Cadera)" },
+                    { name: "Trapecio mancuernas", reps: "3x12" },
+                    { name: "Biceps barra Z / Martillo", reps: "2x10, 1x15, 1x6" }
                 ]
             },
             empuje2: {
-                title: "Empuje y Cuádriceps - Día 2",
-                message: "Hoy toca inclinados y hombros fuertes.",
+                message: "Empuje y cuadriseps día 2",
                 exercises: [
-                    { name: "Estocadas", sets: "4 series de 30 pasos" },
-                    { name: "Camilla / Prensa / Sissy", sets: "3x15" },
-                    { name: "Press inclinado (Barra o Mancuerna)", sets: "4x8 o 3x8" },
-                    { name: "Press militar (Barra o Mancuerna)", sets: "3x8" },
-                    { name: "Tríceps barra Z (o a la frente)", sets: "3x10, 1x15" }
+                    { name: "Estocadas caminando", reps: "4 series de 30 pasos" },
+                    { name: "Camilla / Prensa / Sissy", reps: "3x15" },
+                    { name: "Press inclinado (Barra o Mancuerna)", reps: "4x8 o 3x8" },
+                    { name: "Press militar (Barra o Mancuerna)", reps: "3x8" },
+                    { name: "Triceps barra Z / a la frente", reps: "3x10, 1x15" }
                 ]
             },
             tiron2: {
-                title: "Tirón y Femoral - Día 2",
-                message: "¡Máximo esfuerzo en el remo y las búlgaras!",
+                message: "Tirón y femoral día 2",
                 exercises: [
-                    { name: "Prensa sumo", sets: "4x8" },
-                    { name: "Búlgaras", sets: "3x15" },
-                    { name: "Remo (Barra o Mancuerna)", sets: "4x8" },
-                    { name: "Trapecio Haney", sets: "3x10" },
-                    { name: "Hombro posterior (Máquina o Polea)", sets: "Triserie descendente 3x8" },
-                    { name: "Bíceps (Mancuerna, Martillo o Scott)", sets: "3x12" }
+                    { name: "Prensa sumo", reps: "4x8" },
+                    { name: "Búlgaras", reps: "3x15" },
+                    { name: "Remo (Barra o Mancuerna)", reps: "4x8" },
+                    { name: "Trapecio Haney", reps: "3x10" },
+                    { name: "Hombro posterior (Máquina o Polea)", reps: "3x8", special: "Triserie descendente" },
+                    { name: "Biceps (Mancuerna, Martillo o Scott)", reps: "3x12" }
                 ]
             }
         };
 
-        // Lógica de carga de rutina
         function loadRoutine() {
             const selected = document.getElementById('routineSelect').value;
             const data = routines[selected];
             const display = document.getElementById('routineDisplay');
 
-            let html = `
-                <div class="routine-header">
-                    <p class="message">"${data.message}"</p>
-                    <h2>${data.title}</h2>
-                </div>
-            `;
+            let html = `<div class="message">${data.message}</div>`;
 
             data.exercises.forEach(ex => {
                 html += `
                     <div class="exercise-card">
                         <h3>${ex.name}</h3>
-                        <p>${ex.sets}</p>
+                        <div class="reps-info">${ex.reps}</div>
+                        ${ex.special ? `<div class="special-method">${ex.special}</div>` : ''}
+                        ${ex.note ? `<span class="alt-option">${ex.note}</span>` : ''}
                     </div>
                 `;
             });
@@ -216,55 +242,42 @@
             display.innerHTML = html;
         }
 
-        // Lógica del Cronómetro
-        let startTime;
-        let elapsedTime = 0;
-        let timerInterval;
+        // Cronómetro
+        let startTime, elapsedTime = 0, timerInterval;
 
         function timeToString(time) {
-            let diffInHrs = time / 3600000;
-            let hh = Math.floor(diffInHrs);
-
-            let diffInMin = (diffInHrs - hh) * 60;
-            let mm = Math.floor(diffInMin);
-
-            let diffInSec = (diffInMin - mm) * 60;
-            let ss = Math.floor(diffInSec);
-
-            let formattedMM = mm.toString().padStart(2, "0");
-            let formattedSS = ss.toString().padStart(2, "0");
-            let formattedHH = hh.toString().padStart(2, "0");
-
-            return `${formattedHH}:${formattedMM}:${formattedSS}`;
-        }
-
-        function print(txt) {
-            document.getElementById("display").innerHTML = txt;
+            let hh = Math.floor(time / 3600000);
+            let mm = Math.floor((time % 3600000) / 60000);
+            let ss = Math.floor((time % 60000) / 1000);
+            return `${hh.toString().padStart(2, "0")}:${mm.toString().padStart(2, "0")}:${ss.toString().padStart(2, "0")}`;
         }
 
         function startStop() {
             const btn = document.getElementById("startBtn");
             if (btn.innerText === "Iniciar") {
                 startTime = Date.now() - elapsedTime;
-                timerInterval = setInterval(function printTime() {
+                timerInterval = setInterval(() => {
                     elapsedTime = Date.now() - startTime;
-                    print(timeToString(elapsedTime));
+                    document.getElementById("display").innerText = timeToString(elapsedTime);
                 }, 1000);
                 btn.innerText = "Pausar";
+                btn.style.background = "#ffcc00";
             } else {
                 clearInterval(timerInterval);
                 btn.innerText = "Iniciar";
+                btn.style.background = "var(--primary)";
             }
         }
 
         function reset() {
             clearInterval(timerInterval);
-            print("00:00:00");
+            document.getElementById("display").innerText = "00:00:00";
             elapsedTime = 0;
-            document.getElementById("startBtn").innerText = "Iniciar";
+            const btn = document.getElementById("startBtn");
+            btn.innerText = "Iniciar";
+            btn.style.background = "var(--primary)";
         }
 
-        // Cargar rutina inicial
         window.onload = loadRoutine;
     </script>
 </body>
