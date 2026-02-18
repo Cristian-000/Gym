@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gym Tracker - Rutina</title>
+    <style>
+        :root {
+            --primary: #d4ff00; /* Color volt/lima muy de gym */
+            --bg: #121212;
+            --card-bg: #1e1e1e;
+            --text: #ffffff;
+            --text-dim: #b3b3b3;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Cronómetro Fijo */
+        .timer-container {
+            position: sticky;
+            top: 0;
+            width: 100%;
+            background-color: var(--card-bg);
+            padding: 15px 0;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            z-index: 1000;
+            text-align: center;
+            border-bottom: 2px solid var(--primary);
+        }
+
+        #display {
+            font-size: 2.5rem;
+            font-weight: bold;
+            font-variant-numeric: tabular-nums;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        .controls button {
+            background: none;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            padding: 8px 20px;
+            margin: 0 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .controls button:hover {
+            background-color: var(--primary);
+            color: black;
+        }
+
+        /* Contenido Principal */
+        .content {
+            width: 90%;
+            max-width: 500px;
+            padding: 20px 0;
+        }
+
+        select {
+            width: 100%;
+            padding: 12px;
+            background: var(--card-bg);
+            color: white;
+            border: 1px solid #444;
+            border-radius: 8px;
+            font-size: 1rem;
+            margin-bottom: 20px;
+        }
+
+        .routine-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .message {
+            font-style: italic;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .exercise-card {
+            background: var(--card-bg);
+            margin-bottom: 10px;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .exercise-card h3 {
+            margin: 0 0 5px 0;
+            font-size: 1.1rem;
+        }
+
+        .exercise-card p {
+            margin: 0;
+            color: var(--text-dim);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            #display { font-size: 2rem; }
+            .controls button { padding: 6px 15px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="timer-container">
+        <div id="display">00:00:00</div>
+        <div class="controls">
+            <button onclick="startStop()" id="startBtn">Iniciar</button>
+            <button onclick="reset()">Reiniciar</button>
+        </div>
+    </div>
+
+    <div class="content">
+        <select id="routineSelect" onchange="loadRoutine()">
+            <option value="empuje1">Empuje y Cuádriceps - Día 1</option>
+            <option value="tiron1">Tirón y Femoral - Día 1</option>
+            <option value="empuje2">Empuje y Cuádriceps - Día 2</option>
+            <option value="tiron2">Tirón y Femoral - Día 2</option>
+        </select>
+
+        <div id="routineDisplay">
+            </div>
+    </div>
+
+    <script>
+        // Datos de las rutinas
+        const routines = {
+            empuje1: {
+                title: "Empuje y Cuádriceps - Día 1",
+                message: "¡Dale con todo a esas piernas y al pecho!",
+                exercises: [
+                    { name: "Sentadilla", sets: "4x8" },
+                    { name: "Prensa cuádriceps / Sissy / Camilla", sets: "3x15" },
+                    { name: "Press plano (Barra o Mancuerna)", sets: "3x8" },
+                    { name: "Aperturas planas", sets: "3x12" },
+                    { name: "Vuelos laterales (Triserie descendente)", sets: "3x8" },
+                    { name: "Tríceps polea", sets: "2x10 y 1x6" }
+                ]
+            },
+            tiron1: {
+                title: "Tirón y Femoral - Día 1",
+                message: "Enfócate en la espalda y el control del peso muerto.",
+                exercises: [
+                    { name: "Peso muerto", sets: "4x8" },
+                    { name: "Camilla femoral / Plancha femoral", sets: "3x15" },
+                    { name: "Dominadas", sets: "4x10" },
+                    { name: "Posterior de hombros (Polea o Cadera)", sets: "3x8 descendente" },
+                    { name: "Trapecio mancuernas", sets: "3x12" },
+                    { name: "Bíceps barra Z (o Martillo)", sets: "2x10, 1x15, 1x6" }
+                ]
+            },
+            empuje2: {
+                title: "Empuje y Cuádriceps - Día 2",
+                message: "Hoy toca inclinados y hombros fuertes.",
+                exercises: [
+                    { name: "Estocadas", sets: "4 series de 30 pasos" },
+                    { name: "Camilla / Prensa / Sissy", sets: "3x15" },
+                    { name: "Press inclinado (Barra o Mancuerna)", sets: "4x8 o 3x8" },
+                    { name: "Press militar (Barra o Mancuerna)", sets: "3x8" },
+                    { name: "Tríceps barra Z (o a la frente)", sets: "3x10, 1x15" }
+                ]
+            },
+            tiron2: {
+                title: "Tirón y Femoral - Día 2",
+                message: "¡Máximo esfuerzo en el remo y las búlgaras!",
+                exercises: [
+                    { name: "Prensa sumo", sets: "4x8" },
+                    { name: "Búlgaras", sets: "3x15" },
+                    { name: "Remo (Barra o Mancuerna)", sets: "4x8" },
+                    { name: "Trapecio Haney", sets: "3x10" },
+                    { name: "Hombro posterior (Máquina o Polea)", sets: "Triserie descendente 3x8" },
+                    { name: "Bíceps (Mancuerna, Martillo o Scott)", sets: "3x12" }
+                ]
+            }
+        };
+
+        // Lógica de carga de rutina
+        function loadRoutine() {
+            const selected = document.getElementById('routineSelect').value;
+            const data = routines[selected];
+            const display = document.getElementById('routineDisplay');
+
+            let html = `
+                <div class="routine-header">
+                    <p class="message">"${data.message}"</p>
+                    <h2>${data.title}</h2>
+                </div>
+            `;
+
+            data.exercises.forEach(ex => {
+                html += `
+                    <div class="exercise-card">
+                        <h3>${ex.name}</h3>
+                        <p>${ex.sets}</p>
+                    </div>
+                `;
+            });
+
+            display.innerHTML = html;
+        }
+
+        // Lógica del Cronómetro
+        let startTime;
+        let elapsedTime = 0;
+        let timerInterval;
+
+        function timeToString(time) {
+            let diffInHrs = time / 3600000;
+            let hh = Math.floor(diffInHrs);
+
+            let diffInMin = (diffInHrs - hh) * 60;
+            let mm = Math.floor(diffInMin);
+
+            let diffInSec = (diffInMin - mm) * 60;
+            let ss = Math.floor(diffInSec);
+
+            let formattedMM = mm.toString().padStart(2, "0");
+            let formattedSS = ss.toString().padStart(2, "0");
+            let formattedHH = hh.toString().padStart(2, "0");
+
+            return `${formattedHH}:${formattedMM}:${formattedSS}`;
+        }
+
+        function print(txt) {
+            document.getElementById("display").innerHTML = txt;
+        }
+
+        function startStop() {
+            const btn = document.getElementById("startBtn");
+            if (btn.innerText === "Iniciar") {
+                startTime = Date.now() - elapsedTime;
+                timerInterval = setInterval(function printTime() {
+                    elapsedTime = Date.now() - startTime;
+                    print(timeToString(elapsedTime));
+                }, 1000);
+                btn.innerText = "Pausar";
+            } else {
+                clearInterval(timerInterval);
+                btn.innerText = "Iniciar";
+            }
+        }
+
+        function reset() {
+            clearInterval(timerInterval);
+            print("00:00:00");
+            elapsedTime = 0;
+            document.getElementById("startBtn").innerText = "Iniciar";
+        }
+
+        // Cargar rutina inicial
+        window.onload = loadRoutine;
+    </script>
+</body>
+</html>
